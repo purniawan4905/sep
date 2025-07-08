@@ -1,0 +1,7 @@
+# Aktifkan URL rewriting
+RewriteEngine On
+
+# Jika file atau folder tidak ditemukan, arahkan ke index.php (jika pakai router)
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^ index.php [QSA,L]
