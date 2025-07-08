@@ -17,35 +17,44 @@ $params = [];
 /* ---- CRUD Handler ---- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $aksi = $_POST['aksi'] ?? '';
+// AMBIL DATA YANG MUNGKIN TIDAK DIISI
+    $naik_2_ke_1   = isset($_POST['naik_2_ke_1'])   ? $_POST['naik_2_ke_1']   : 0;
+    $naik_2_ke_vip = isset($_POST['naik_2_ke_vip']) ? $_POST['naik_2_ke_vip'] : 0;
+    $naik_1_ke_vip = isset($_POST['naik_1_ke_vip']) ? $_POST['naik_1_ke_vip'] : 0;
 
     if ($aksi === 'tambah') {
-        $stmt = $pdo->prepare("INSERT INTO diagnosa (diagnosa, kelas1, kelas2, kelas3, keterangan)
-                               VALUES (?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO diagnosa (diagnosa, kelas1, kelas2, kelas3, `2_naik_1`, `2_naik_>1`, `1_naik_>1`, keterangan)
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $_POST['diagnosa'],
             $_POST['kelas1'],
             $_POST['kelas2'],
             $_POST['kelas3'],
+            $naik_2_ke_1,
+            $naik_2_ke_vip,
+            $naik_1_ke_vip,
             $_POST['keterangan'] ?? null
         ]);
         header("Location: index.php?status=created"); exit;
     }
 
     if ($aksi === 'edit' && isset($_POST['id'])) {
-        $stmt = $pdo->prepare("UPDATE diagnosa SET diagnosa=?, kelas1=?, kelas2=?, kelas3=?, keterangan=?
+        $stmt = $pdo->prepare("UPDATE diagnosa SET diagnosa=?, kelas1=?, kelas2=?, kelas3=?, `2_naik_1`=?, `2_naik_>1`=?, `1_naik_>1`=?, keterangan=?
                                WHERE id = ?");
         $stmt->execute([
             $_POST['diagnosa'],
             $_POST['kelas1'],
             $_POST['kelas2'],
             $_POST['kelas3'],
+            $naik_2_ke_1,
+            $naik_2_ke_vip,
+            $naik_1_ke_vip,
             $_POST['keterangan'] ?? null,
             $_POST['id']
         ]);
         header("Location: index.php?status=updated"); exit;
     }
 }
-
 
 // ---- Delete (GET) ----
 if (isset($_GET['delete'])) {
@@ -131,6 +140,9 @@ $rows  = $stmt->fetchAll();
       <th class="px-4 py-3 text-right">Kelas 1</th>
       <th class="px-4 py-3 text-right">Kelas 2</th>
       <th class="px-4 py-3 text-right">Kelas 3</th>
+      <th class="px-4 py-3 text-right">Kelas 2 Naik Kelas 1</th>
+      <th class="px-4 py-3 text-right">Kelas 2 Naik VIP</th>
+      <th class="px-4 py-3 text-right">Kelas 1 Naik VIP</th>
       <th class="px-4 py-3">Keterangan</th>
       <th class="px-4 py-3 text-center">Aksi</th>
     </tr>
@@ -143,6 +155,9 @@ $rows  = $stmt->fetchAll();
         <td class="px-4 py-2 text-right"><?= number_format($r['kelas1']) ?></td>
         <td class="px-4 py-2 text-right"><?= number_format($r['kelas2']) ?></td>
         <td class="px-4 py-2 text-right"><?= number_format($r['kelas3']) ?></td>
+        <td class="px-4 py-2 text-right"><?= number_format($r['2_naik_1']) ?></td>
+        <td class="px-4 py-2 text-right"><?= number_format($r['2_naik_>1']) ?></td>
+        <td class="px-4 py-2 text-right"><?= number_format($r['1_naik_>1']) ?></td>
         <td class="px-4 py-2"><?= htmlspecialchars($r['keterangan']) ?></td>
         <td class="px-4 py-2 text-center space-x-2">
           <a href="#" @click.prevent="openEdit(<?= htmlspecialchars(json_encode($r), ENT_QUOTES, 'UTF-8') ?>)"
@@ -179,17 +194,26 @@ $rows  = $stmt->fetchAll();
     <form method="POST" class="grid grid-cols-2 gap-4">
       <input type="hidden" name="aksi" :value="aksi">
       <input type="hidden" name="id" :value="form.id">
+<input type="text" name="diagnosa" x-model="form.diagnosa" placeholder="Diagnosa"
+       required class="border p-2 rounded col-span-2">
 
-      <input type="text" name="diagnosa" x-model="form.diagnosa" placeholder="Diagnosa"
-             required class="border p-2 rounded col-span-2">
       <input type="number" step="0.01" name="kelas1" x-model="form.kelas1" placeholder="Tarif Kelas 1"
-             required class="border p-2 rounded">
+            required class="border p-2 rounded">
+
       <input type="number" step="0.01" name="kelas2" x-model="form.kelas2" placeholder="Tarif Kelas 2"
-             required class="border p-2 rounded">
+            required class="border p-2 rounded">
+
       <input type="number" step="0.01" name="kelas3" x-model="form.kelas3" placeholder="Tarif Kelas 3"
-             required class="border p-2 rounded">
-      <input type="text" name="keterangan" x-model="form.keterangan" placeholder="Keterangan"
-             class="border p-2 rounded col-span-2">
+            required class="border p-2 rounded">
+
+      <input type="number" step="0.01" name="naik_2_ke_1" x-model="form.naik_2_ke_1" placeholder="Kelas 2 Naik Kelas 1"
+            class="border p-2 rounded">
+
+      <input type="number" step="0.01" name="naik_2_ke_vip" x-model="form.naik_2_ke_vip" placeholder="Kelas 2 Naik VIP"
+            class="border p-2 rounded">
+
+      <input type="number" step="0.01" name="naik_1_ke_vip" x-model="form.naik_1_ke_vip" placeholder="Kelas 1 Naik VIP"
+            class="border p-2 rounded">
 
       <div class="col-span-2 flex justify-end gap-2 mt-2">
         <button type="button" @click="closeModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Batal</button>
@@ -202,16 +226,36 @@ $rows  = $stmt->fetchAll();
   <script>
     window.modal = function(){   // Pastikan ini didefinisikan SEBELUM Alpine jalan
   return {
-    showModal:false,
-    aksi:'tambah',
-    formTitle:'Tambah Diagnosa',
-    form:{id:'',diagnosa:'',kelas1:'',kelas2:'',kelas3:'',keterangan:''},
+    showModal: false,
+    aksi: 'tambah',
+    formTitle: 'Tambah Diagnosa',
+    form: {
+      id: '',
+      diagnosa: '',
+      kelas1: '',
+      kelas2: '',
+      kelas3: '',
+      naik_2_ke_1: '',
+      naik_2_ke_vip: '',
+      naik_1_ke_vip: '',
+      keterangan: ''
+    },
 
-    openAdd(){
-      this.aksi='tambah';
-      this.formTitle='Tambah Diagnosa';
-      this.form={id:'',diagnosa:'',kelas1:'',kelas2:'',kelas3:'',keterangan:''};
-      this.showModal=true;
+    openAdd() {
+      this.aksi = 'tambah';
+      this.formTitle = 'Tambah Diagnosa';
+      this.form = {
+        id: '',
+        diagnosa: '',
+        kelas1: '',
+        kelas2: '',
+        kelas3: '',
+        naik_2_ke_1: '',
+        naik_2_ke_vip: '',
+        naik_1_ke_vip: '',
+        keterangan: ''
+      };
+      this.showModal = true;
     },
     openEdit(d){
       this.aksi='edit';
