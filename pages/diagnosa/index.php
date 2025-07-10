@@ -206,14 +206,26 @@ $rows  = $stmt->fetchAll();
       <input type="number" step="0.01" name="kelas3" x-model="form.kelas3" placeholder="Tarif Kelas 3"
             required class="border p-2 rounded">
 
-      <input type="number" step="0.01" name="naik_2_ke_1" x-model="form.naik_2_ke_1" placeholder="Kelas 2 Naik Kelas 1"
-            class="border p-2 rounded">
+      <!-- Kelas 2 Naik Kelas 1 -->
+      <input type="number" step="0.01" name="naik_2_ke_1" x-model="form.naik_2_ke_1"
+            placeholder="Kelas 2 Naik Kelas 1"
+            :class="invalid_2_1 ? 'border-red-500 bg-red-100' : 'border-green-500 bg-white'"
+            class="border p-2 rounded" readonly>
 
-      <input type="number" step="0.01" name="naik_2_ke_vip" x-model="form.naik_2_ke_vip" placeholder="Kelas 2 Naik VIP"
-            class="border p-2 rounded">
+      <!-- Kelas 2 Naik VIP -->
+      <input type="number" step="0.01" name="naik_2_ke_vip" x-model="form.naik_2_ke_vip"
+            placeholder="Kelas 2 Naik VIP"
+            :class="invalid_2_vip ? 'border-red-500 bg-red-100' : 'border-green-500 bg-white'"
+            class="border p-2 rounded" readonly>
 
-      <input type="number" step="0.01" name="naik_1_ke_vip" x-model="form.naik_1_ke_vip" placeholder="Kelas 1 Naik VIP"
-            class="border p-2 rounded">
+      <!-- Kelas 1 Naik VIP -->
+      <input type="number" step="0.01" name="naik_1_ke_vip" x-model="form.naik_1_ke_vip"
+            placeholder="Kelas 1 Naik VIP"
+            :class="invalid_1_vip ? 'border-red-500 bg-red-100' : 'border-green-500 bg-white'"
+            class="border p-2 rounded" readonly>
+
+      <input type="text" name="keterangan" x-model="form.keterangan" placeholder="Keterangan"
+            class="border p-2 rounded col-span-2">
 
       <div class="col-span-2 flex justify-end gap-2 mt-2">
         <button type="button" @click="closeModal()" class="bg-gray-400 text-white px-4 py-2 rounded">Batal</button>
@@ -224,7 +236,7 @@ $rows  = $stmt->fetchAll();
 </div>
 
   <script>
-    window.modal = function(){   // Pastikan ini didefinisikan SEBELUM Alpine jalan
+    window.modal = function () {
   return {
     showModal: false,
     aksi: 'tambah',
@@ -232,13 +244,32 @@ $rows  = $stmt->fetchAll();
     form: {
       id: '',
       diagnosa: '',
-      kelas1: '',
-      kelas2: '',
-      kelas3: '',
-      naik_2_ke_1: '',
-      naik_2_ke_vip: '',
-      naik_1_ke_vip: '',
+      kelas1: 0,
+      kelas2: 0,
+      kelas3: 0,
+      naik_2_ke_1: 0,
+      naik_2_ke_vip: 0,
+      naik_1_ke_vip: 0,
       keterangan: ''
+    },
+
+    // Fungsi untuk menghitung naik kelas otomatis
+    updateNaikKelas() {
+      const k1 = parseFloat(this.form.kelas1) || 0;
+      const k2 = parseFloat(this.form.kelas2) || 0;
+
+      const naik_2_1 = k1 - k2;
+      const naik_2_vip = (k1 - k2) + (k1 * 0.75);
+      const naik_1_vip = k1 * 0.75;
+
+      this.form.naik_2_ke_1 = parseFloat(naik_2_1.toFixed(2));
+      this.form.naik_2_ke_vip = parseFloat(naik_2_vip.toFixed(2));
+      this.form.naik_1_ke_vip = parseFloat(naik_1_vip.toFixed(2));
+
+      // Validasi logika (misalnya jika hasil < 0)
+      this.invalid_2_1 = naik_2_1 < 0;
+      this.invalid_2_vip = naik_2_vip < 0;
+      this.invalid_1_vip = naik_1_vip < 0;
     },
 
     openAdd() {
@@ -247,32 +278,49 @@ $rows  = $stmt->fetchAll();
       this.form = {
         id: '',
         diagnosa: '',
-        kelas1: '',
-        kelas2: '',
-        kelas3: '',
-        naik_2_ke_1: '',
-        naik_2_ke_vip: '',
-        naik_1_ke_vip: '',
+        kelas1: 0,
+        kelas2: 0,
+        kelas3: 0,
+        naik_2_ke_1: 0,
+        naik_2_ke_vip: 0,
+        naik_1_ke_vip: 0,
         keterangan: ''
       };
       this.showModal = true;
     },
-    openEdit(d){
-      this.aksi='edit';
-      this.formTitle='Edit Diagnosa';
-      this.form={...d};
-      this.showModal=true;
+
+    openEdit(d) {
+      this.aksi = 'edit';
+      this.formTitle = 'Edit Diagnosa';
+      this.form = {
+        id: d.id,
+        diagnosa: d.diagnosa,
+        kelas1: parseFloat(d.kelas1) || 0,
+        kelas2: parseFloat(d.kelas2) || 0,
+        kelas3: parseFloat(d.kelas3) || 0,
+        naik_2_ke_1: parseFloat(d['2_naik_1']) || 0,
+        naik_2_ke_vip: parseFloat(d['2_naik_>1']) || 0,
+        naik_1_ke_vip: parseFloat(d['1_naik_>1']) || 0,
+        keterangan: d.keterangan
+      };
+      this.updateNaikKelas(); // hitung ulang
+      this.showModal = true;
     },
-    closeModal(){ this.showModal=false; },
-    confirmDelete(id){
+
+    closeModal() { this.showModal = false; },
+
+    confirmDelete(id) {
       Swal.fire({
-        title:'Hapus data?',
-        text:'Data yang dihapus tidak dapat dikembalikan!',
-        icon:'warning',showCancelButton:true,
-        confirmButtonColor:'#e11d48',
-        cancelButtonColor:'#6b7280',
-        confirmButtonText:'Ya, hapus'
-      }).then(r=>{ if(r.isConfirmed) location='?delete='+id; });
+        title: 'Hapus data?',
+        text: 'Data yang dihapus tidak dapat dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e11d48',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Ya, hapus'
+      }).then(r => {
+        if (r.isConfirmed) location = '?delete=' + id;
+      });
     }
   }
 }
