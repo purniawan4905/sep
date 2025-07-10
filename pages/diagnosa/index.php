@@ -141,8 +141,8 @@ $rows  = $stmt->fetchAll();
       <th class="px-4 py-3 text-right">Kelas 2</th>
       <th class="px-4 py-3 text-right">Kelas 3</th>
       <th class="px-4 py-3 text-right">Kelas 2 Naik Kelas 1</th>
-      <th class="px-4 py-3 text-right">Kelas 2 Naik VIP</th>
-      <th class="px-4 py-3 text-right">Kelas 1 Naik VIP</th>
+      <th class="px-4 py-3 text-right">Kelas 2 Naik VIP 75%</th>
+      <th class="px-4 py-3 text-right">Kelas 1 Naik VIP 75%</th>
       <th class="px-4 py-3">Keterangan</th>
       <th class="px-4 py-3 text-center">Aksi</th>
     </tr>
