@@ -38,23 +38,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
-    body {
-      background: linear-gradient(to top right, #4f46e5, #9333ea);
-    }
-    .glass {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-    }
-  </style>
+  body {
+    background: linear-gradient(-45deg, #4f46e5, #9333ea, #4f46e5, #9333ea);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-15px); }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-delay {
+    animation: float 8s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 10s linear infinite;
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+</style>
 </head>
 <body class="min-h-screen flex items-center justify-center text-gray-800">
+    <!-- Floating SVG Icons -->
+<div class="absolute inset-0 overflow-hidden -z-10">
+  <!-- Icon 1 -->
+  <svg class="absolute w-12 h-12 text-white/10 animate-float" style="top: 10%; left: 15%;" fill="currentColor" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" />
+  </svg>
+
+  <!-- Icon 2 -->
+  <svg class="absolute w-16 h-16 text-white/10 animate-pulse-slow" style="top: 40%; left: 5%;" fill="currentColor" viewBox="0 0 24 24">
+    <rect x="4" y="4" width="16" height="16" rx="2" />
+  </svg>
+
+  <!-- Icon 3 -->
+  <svg class="absolute w-10 h-10 text-white/10 animate-spin-slow" style="top: 75%; left: 80%;" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 2L15 8H9L12 2Z" />
+  </svg>
+
+  <!-- Icon 4 -->
+  <svg class="absolute w-14 h-14 text-white/10 animate-float-delay" style="top: 60%; left: 50%;" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M4 12a8 8 0 0116 0" />
+  </svg>
+</div>
 
 <div class="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
   <!-- Left Branding -->
   <div class="hidden md:flex flex-col justify-center text-white space-y-6 p-6">
     <h1 class="text-4xl font-extrabold drop-shadow-md">RSU Sebening Kasih</h1>
-    <p class="text-lg leading-relaxed max-w-md">Pencatatan SEP Rawat Inap & Jalan kini lebih efisien, modern, dan aman. Masuk untuk mulai kelola data Anda.</p>
+    <p class="text-lg leading-relaxed max-w-md">Pencatatan SEP Rawat Inap kini lebih efisien, modern, dan aman. Masuk untuk mulai kelola data Anda.</p>
   </div>
 
   <!-- Right Login Form -->
