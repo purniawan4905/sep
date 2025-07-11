@@ -25,120 +25,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="Shortcut Icon" href="assets/img/favicon.ico">
-    <title>Login – Pencatatan SEP</title>
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Heroicons -->
-    <script src="https://unpkg.com/heroicons@2.0.16/dist/heroicons.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="Shortcut Icon" href="assets/img/favicon.ico">
+  <title>Login – Pencatatan SEP</title>
 
-    <!-- Custom animation -->
-    <style>
-        @keyframes slideFade {
-            0%   { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      background: linear-gradient(to top right, #4f46e5, #9333ea);
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row">
-    <!-- Left side / Illustration -->
-    <div class="relative hidden md:flex flex-1 items-center justify-center overflow-hidden">
-        <!-- Gradient background -->
-        <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 via-purple-600 to-pink-500 opacity-80"></div>
-        <!-- Decorative circles -->
-        <div class="absolute w-80 h-80 bg-white/10 rounded-full top-10 -left-20 blur-3xl"></div>
-        <div class="absolute w-72 h-72 bg-white/10 rounded-full bottom-16 -right-16 blur-3xl"></div>
-        <!-- Branding text -->
-        <div class="relative text-center text-white p-10">
-            <h4 class="text-2xl font-black mb-4 drop-shadow-md">Pencatatan SEP Rawat Inap</h4>
-            <h1 class="text-4xl font-black mb-4 drop-shadow-md">RSU SEBENING KASIH</h1>
-            <p class="text-lg max-w-sm mx-auto opacity-90">Kelola data Anda dengan cepat, aman, dan modern.</p>
-        </div>
-    </div>
+<body class="min-h-screen flex items-center justify-center text-gray-800">
 
-    <!-- Right side / Form -->
-    <div class="flex flex-1 items-center justify-center p-6">
-        <form class="w-full max-w-md bg-white/70 backdrop-blur-lg shadow-lg rounded-2xl p-8 animate-[slideFade_.5s_ease-out]" 
-              method="POST" autocomplete="off">
-            <h2 class="text-3xl font-extrabold text-center text-gray-800 mb-8">Selamat Datang 👋, Login Di sini</h2>
+<div class="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+  <!-- Left Branding -->
+  <div class="hidden md:flex flex-col justify-center text-white space-y-6 p-6">
+    <h1 class="text-4xl font-extrabold drop-shadow-md">RSU Sebening Kasih</h1>
+    <p class="text-lg leading-relaxed max-w-md">Pencatatan SEP Rawat Inap & Jalan kini lebih efisien, modern, dan aman. Masuk untuk mulai kelola data Anda.</p>
+  </div>
 
-            <?php if ($error): ?>
-                <script>
-                    Swal.fire({ icon: 'error', title: 'Oops...', text: '<?= $error ?>' });
-                </script>
-            <?php endif; ?>
+  <!-- Right Login Form -->
+  <div class="glass p-8 rounded-2xl shadow-lg w-full animate-fade-in">
+    <h2 class="text-2xl font-bold text-center text-white mb-6">Silakan Login</h2>
 
-            <!-- Username -->
-            <div class="mb-5 relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <svg class="h-5 w-5"><use href="#user" /></svg>
-                </span>
-                <input
-                    class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    type="text" name="username" placeholder="Username" required>
-            </div>
+    <?php if ($error): ?>
+      <script>
+        Swal.fire({ icon: 'error', title: 'Gagal Login', text: '<?= $error ?>' });
+      </script>
+    <?php endif; ?>
 
-            <!-- Password -->
-            <div class="mb-6 relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <svg class="h-5 w-5"><use href="#lock-closed" /></svg>
-                </span>
-                <input
-                    class="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    type="password" id="pwd" name="password" placeholder="Password" required>
-                <!-- show/hide toggle -->
-                <span onclick="togglePwd()" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-gray-400">
-                    <svg id="eye" class="h-5 w-5"><use href="#eye" /></svg>
-                </span>
-            </div>
+    <form method="POST" autocomplete="off" class="space-y-5">
+      <!-- Username -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-white mb-1">Username</label>
+        <input type="text" name="username" id="username" required
+               class="w-full px-4 py-3 rounded-lg bg-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner">
+      </div>
 
-            <button
-                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-xl transition duration-150">
-                Login
-            </button>
+      <!-- Password -->
+      <div class="relative">
+        <label for="password" class="block text-sm font-medium text-white mb-1">Password</label>
+        <input type="password" name="password" id="password" required
+               class="w-full px-4 py-3 rounded-lg bg-white/70 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-inner">
+        <button type="button" onclick="togglePassword()"
+                class="absolute right-3 top-[38px] text-sm text-gray-600 hover:text-gray-800">
+          👁️
+        </button>
+      </div>
 
-            <p class="text-center text-sm text-gray-600 mt-6">
-                Belum punya akun?
-                <a href="register.php" class="text-blue-600 font-medium hover:underline">Daftar Akun</a>
-            </p>
-        </form>
-    </div>
+      <button
+        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg shadow-lg transition">
+        Login
+      </button>
 
-    <!-- Heroicons symbols -->
-    <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
-        <symbol id="user" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-3.314 0-9 1.657-9 5v3h18v-3c0-3.343-5.686-5-9-5z"/>
-        </symbol>
-        <symbol id="lock-closed" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17 9V7a5 5 0 00-10 0v2H5v12h14V9h-2zm-8-2a3 3 0 016 0v2H9V7z"/>
-        </symbol>
-        <symbol id="eye" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z"/>
-        </symbol>
-        <symbol id="eye-off" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M2.808 1.394l19.799 19.799-1.414 1.414L18.99 19.4 17.7 18.11C15.885 19.284 13.951 20 12 20c-5 0-9.27-3.11-11-7 1.027-2.301 2.78-4.269 4.93-5.57L1.394 2.808 2.808 1.394zM12 7a5 5 0 00-5 5c0 .51.079 1.002.224 1.465l6.241-6.241A4.987 4.987 0 0012 7zm5 5a4.978 4.978 0 00-.224-1.465l-6.241 6.241A4.988 4.988 0 0017 12z"/>
-        </symbol>
-    </svg>
+      <p class="text-sm text-center text-white mt-4">
+        Belum punya akun? <a href="register.php" class="underline hover:text-yellow-300">Register</a>
+      </p>
+    </form>
+  </div>
+</div>
 
-    <!-- Toggle password visibility -->
-    <script>
-        function togglePwd() {
-            const pwd = document.getElementById('pwd');
-            const eye = document.getElementById('eye');
-            if (pwd.type === 'password') {
-                pwd.type = 'text';
-                eye.setAttribute('href', '#eye-off');
-            } else {
-                pwd.type = 'password';
-                eye.setAttribute('href', '#eye');
-            }
-        }
-    </script>
+<!-- Toggle Password JS -->
+<script>
+  function togglePassword() {
+    const pwd = document.getElementById('password');
+    pwd.type = pwd.type === 'password' ? 'text' : 'password';
+  }
+</script>
+
 </body>
 </html>
