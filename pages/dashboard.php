@@ -41,6 +41,24 @@ $kelas1 = array_column($diagData, 'kelas1');
 $kelas2 = array_column($diagData, 'kelas2');
 $kelas3 = array_column($diagData, 'kelas3');
 
+// Data pasien masuk per hari di bulan berjalan
+$currentMonth = date('Y-m');
+$stmtHarian = $pdo->prepare("
+    SELECT 
+        DATE(tanggal_masuk) AS tanggal,
+        COUNT(*) AS total
+    FROM records
+    WHERE DATE_FORMAT(tanggal_masuk, '%Y-%m') = ?
+    GROUP BY tanggal
+    ORDER BY tanggal
+");
+$stmtHarian->execute([$currentMonth]);
+$dataHarian = $stmtHarian->fetchAll(PDO::FETCH_ASSOC);
+
+// Ambil semua tanggal dan nilai
+$harianLabels = array_column($dataHarian, 'tanggal');
+$harianValues = array_column($dataHarian, 'total');
+
 // Ambil data pasien yang masuk hari ini
 $today = date('Y-m-d');
 $stmtToday = $pdo->prepare("SELECT * FROM records WHERE DATE(tanggal_masuk) = ?");
@@ -121,6 +139,12 @@ header("Pragma: no-cache");
 <div class="bg-white rounded shadow p-6 mb-6 mt-6 border border-gray-100 hover:shadow-xl transition duration-200">
     <h2 class="text-xl font-bold mb-4">Tren Masuk Pasien per Bulan</h2>
     <canvas id="trendChart" height="100"></canvas>
+</div>
+
+<!-- ======== GRAFIK PASIEN PER HARI BULAN INI ======== -->
+<div class="mt-6 bg-white p-4 rounded shadow border border-gray-100 hover:shadow-xl transition duration-200">
+    <h2 class="text-xl font-bold mb-2">Jumlah Pasien Masuk Harian (<?= date('F Y') ?>)</h2>
+    <canvas id="chartPasienHarianBulanIni" height="100"></canvas>
 </div>
 
 <!-- ======== GRAFIK DIAGNOSA ======== -->
@@ -206,7 +230,7 @@ header("Pragma: no-cache");
         data:{
             labels:<?= json_encode($trendlabels) ?>,
             datasets:[{
-            label:'Jumlah Pasien Masuk',
+            label:'Jumlah Pasien Masuk Per Bulan',
             data:<?= json_encode($trendvalues) ?>,
             fill:true,
             backgroundColor:'rgba(59,130,246,.2)',
@@ -273,5 +297,53 @@ header("Pragma: no-cache");
         <?php else: ?>
             console.warn('Data chart diagnosa tidak tersedia');
         <?php endif; ?>
+
+        /* ---------- LINE: Pasien Masuk Harian Bulan Ini ---------- */
+const ctxHarian = document.getElementById('chartPasienHarianBulanIni').getContext('2d');
+new Chart(ctxHarian, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($harianLabels) ?>,
+        datasets: [{
+            label: 'Jumlah Pasien Masuk Per Hari',
+            data: <?= json_encode($harianValues) ?>,
+            fill: true,
+            backgroundColor: 'rgba(234, 88, 12, 0.2)',
+            borderColor: '#ea580c',
+            borderWidth: 2,
+            tension: 0.3,
+            pointRadius: 3,
+            pointBackgroundColor: '#ea580c'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: ctx => ctx.parsed.y + ' pasien'
+                }
+            },
+            legend: {
+                display: true
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Tanggal'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Jumlah Pasien'
+                }
+            }
+        }
+    }
+});
 </script>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
