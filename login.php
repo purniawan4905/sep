@@ -34,14 +34,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            secondary: {
+              50: '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+  :root {
+    --primary-500: #0ea5e9;
+    --primary-600: #0284c7;
+    --secondary-500: #a855f7;
+    --secondary-600: #9333ea;
+  }
+  
   body {
-    background: linear-gradient(-45deg, #4f46e5, #9333ea, #4f46e5, #9333ea);
-    background-size: 400% 400%;
-    animation: gradientShift 12s ease infinite;
+    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+    background-size: 200% 200%;
+    animation: gradientShift 10s ease infinite;
+    font-family: 'Inter', sans-serif;
   }
 
   @keyframes gradientShift {
@@ -51,8 +102,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   .glass {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  }
+
+  .glass:hover {
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
 
@@ -75,98 +133,206 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   .animate-spin-slow {
-    animation: spin 10s linear infinite;
+    animation: spin 12s linear infinite;
   }
 
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .animate-fade-in {
-    animation: fade-in 0.5s ease-out forwards;
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .animate-delay-100 {
+    animation-delay: 0.1s;
+  }
+  .animate-delay-200 {
+    animation-delay: 0.2s;
+  }
+  .animate-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  .input-field {
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  .input-field:focus {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+  }
+
+  .btn-gradient {
+    background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+  }
+
+  .btn-gradient:hover {
+    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+  }
+
+  .btn-gradient:active {
+    transform: translateY(0);
+  }
+
+  .floating-shapes {
+    filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04)) drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
   }
 </style>
 </head>
-<body class="min-h-screen flex items-center justify-center text-gray-800">
-    <!-- Floating SVG Icons -->
-<div class="absolute inset-0 overflow-hidden -z-10">
-  <!-- Icon 1 -->
-  <svg class="absolute w-12 h-12 text-white/10 animate-float" style="top: 10%; left: 15%;" fill="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="10" />
-  </svg>
-
-  <!-- Icon 2 -->
-  <svg class="absolute w-16 h-16 text-white/10 animate-pulse-slow" style="top: 40%; left: 5%;" fill="currentColor" viewBox="0 0 24 24">
-    <rect x="4" y="4" width="16" height="16" rx="2" />
-  </svg>
-
-  <!-- Icon 3 -->
-  <svg class="absolute w-10 h-10 text-white/10 animate-spin-slow" style="top: 75%; left: 80%;" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 2L15 8H9L12 2Z" />
-  </svg>
-
-  <!-- Icon 4 -->
-  <svg class="absolute w-14 h-14 text-white/10 animate-float-delay" style="top: 60%; left: 50%;" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M4 12a8 8 0 0116 0" />
-  </svg>
-</div>
-
-<div class="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
-  <!-- Left Branding -->
-  <div class="hidden md:flex flex-col justify-center text-white space-y-6 p-6">
-    <h1 class="text-4xl font-extrabold drop-shadow-md">RSU Sebening Kasih</h1>
-    <p class="text-lg leading-relaxed max-w-md">Pencatatan SEP Rawat Inap kini lebih efisien, modern, dan aman. Masuk untuk mulai kelola data Anda.</p>
+<body class="min-h-screen flex items-center justify-center text-gray-800 antialiased">
+  <!-- Floating Background Shapes -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <!-- Floating circles -->
+    <div class="absolute w-64 h-64 rounded-full bg-white/5 blur-xl top-1/4 -left-16 animate-float"></div>
+    <div class="absolute w-72 h-72 rounded-full bg-white/5 blur-xl bottom-1/4 -right-16 animate-float-delay"></div>
+    
+    <!-- Floating triangles -->
+    <div class="absolute w-40 h-40 bg-white/5 blur-xl top-1/3 right-1/4 animate-pulse-slow" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+    <div class="absolute w-48 h-48 bg-white/5 blur-xl bottom-1/3 left-1/4 animate-pulse-slow" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
   </div>
 
-  <!-- Right Login Form -->
-  <div class="glass p-8 rounded-2xl shadow-lg w-full animate-fade-in">
-    <h2 class="text-2xl font-bold text-center text-white mb-6">Silakan Login</h2>
-
-    <?php if ($error): ?>
-      <script>
-        Swal.fire({ icon: 'error', title: 'Gagal Login', text: '<?= $error ?>' });
-      </script>
-    <?php endif; ?>
-
-    <form method="POST" autocomplete="off" class="space-y-5">
-      <!-- Username -->
-      <div>
-        <label for="username" class="block text-sm font-medium text-white mb-1">Username</label>
-        <input type="text" name="username" id="username" required
-               class="w-full px-4 py-3 rounded-lg bg-white/70 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner">
+  <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 px-6">
+    <!-- Left Branding Section -->
+    <div class="hidden lg:flex flex-col justify-center text-white space-y-8 p-8 animate-fade-in-up">
+      <div class="flex items-center space-x-4">
+        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
+          <i class="fas fa-heartbeat text-3xl text-white"></i>
+        </div>
+        <h1 class="text-4xl font-bold tracking-tight">RSU Sebening Kasih</h1>
       </div>
-
-      <!-- Password -->
-      <div class="relative">
-        <label for="password" class="block text-sm font-medium text-white mb-1">Password</label>
-        <input type="password" name="password" id="password" required
-               class="w-full px-4 py-3 rounded-lg bg-white/70 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-inner">
-        <button type="button" onclick="togglePassword()"
-                class="absolute right-3 top-[38px] text-sm text-gray-600 hover:text-gray-800">
-          👁️
-        </button>
-      </div>
-
-      <button
-        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 rounded-lg shadow-lg transition">
-        Login
-      </button>
-
-      <p class="text-sm text-center text-white mt-4">
-        Belum punya akun? <a href="register.php" class="underline hover:text-yellow-300">Register</a>
+      
+      <p class="text-lg leading-relaxed text-white/90 max-w-md">
+        Sistem pencatatan SEP terintegrasi untuk rawat inap. Akses data pasien dengan cepat dan aman.
       </p>
-    </form>
+      
+      <div class="mt-6 space-y-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+            <i class="fas fa-check text-sm text-white"></i>
+          </div>
+          <span class="text-white/90">Akses cepat dan real-time</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+            <i class="fas fa-check text-sm text-white"></i>
+          </div>
+          <span class="text-white/90">Keamanan data terjamin</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+            <i class="fas fa-check text-sm text-white"></i>
+          </div>
+          <span class="text-white/90">Antarmuka modern dan intuitif</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Login Form -->
+    <div class="glass p-10 rounded-2xl shadow-2xl w-full animate-fade-in-up animate-delay-100">
+      <div class="text-center mb-8">
+        <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 shadow-lg mx-auto mb-4">
+          <i class="fas fa-user-md text-3xl text-white"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-white">Selamat Datang</h2>
+        <p class="text-white/80 mt-2">Masuk untuk mengakses dashboard</p>
+      </div>
+
+      <?php if ($error): ?>
+        <script>
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal Login',
+            text: '<?= $error ?>',
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdrop: 'rgba(0, 0, 0, 0.4)'
+          });
+        </script>
+      <?php endif; ?>
+
+      <form method="POST" autocomplete="off" class="space-y-6">
+        <!-- Username -->
+        <div class="space-y-2 animate-fade-in-up animate-delay-200">
+          <label for="username" class="block text-sm font-medium text-white/90">Username</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-user text-gray-400"></i>
+            </div>
+            <input type="text" name="username" id="username" required
+                   class="input-field w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-0">
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="space-y-2 animate-fade-in-up animate-delay-300">
+          <label for="password" class="block text-sm font-medium text-white/90">Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-gray-400"></i>
+            </div>
+            <input type="password" name="password" id="password" required
+                   class="input-field w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-0">
+            <button type="button" onclick="togglePassword()"
+                    class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors">
+              <i class="far fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="flex items-center justify-between animate-fade-in-up animate-delay-300">
+          <div class="flex items-center">
+            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500">
+            <label for="remember" class="ml-2 block text-sm text-white/80">Ingat saya</label>
+          </div>
+          <div class="text-sm">
+            <a href="#" class="font-medium text-white hover:text-primary-200 transition-colors">Lupa password?</a>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-gradient w-full text-white font-semibold py-3.5 rounded-xl mt-6 animate-fade-in-up animate-delay-400">
+          Masuk Sekarang
+        </button>
+
+        <div class="text-center text-sm text-white/80 mt-6 animate-fade-in-up animate-delay-500">
+          Belum punya akun? 
+          <a href="register.php" class="font-medium text-white hover:text-primary-200 underline underline-offset-4 transition-colors">
+            Daftar disini
+          </a>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- Toggle Password JS -->
-<script>
-  function togglePassword() {
-    const pwd = document.getElementById('password');
-    pwd.type = pwd.type === 'password' ? 'text' : 'password';
-  }
-</script>
+  <!-- Toggle Password JS -->
+  <script>
+    function togglePassword() {
+      const pwd = document.getElementById('password');
+      const icon = document.querySelector('#password + button i');
+      if (pwd.type === 'password') {
+        pwd.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+      } else {
+        pwd.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+      }
+    }
 
+    // Add input focus effects
+    document.querySelectorAll('.input-field').forEach(input => {
+      input.addEventListener('focus', function() {
+        this.parentElement.querySelector('i').classList.add('text-primary-500');
+      });
+      input.addEventListener('blur', function() {
+        this.parentElement.querySelector('i').classList.remove('text-primary-500');
+      });
+    });
+  </script>
 </body>
 </html>
