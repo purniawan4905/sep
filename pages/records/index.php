@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../includes/auth.php';
 requireLogin();
 require_once __DIR__ . '/../../config/database.php';
-include __DIR__ . '/../../includes/header.php';
+
 
 $limit  = 20;                                   // data per halaman
 $page   = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -97,7 +97,11 @@ $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $data = $stmt->fetchAll();
 
-$stmt = $pdo->prepare("SELECT * FROM records $where ORDER BY tanggal_masuk DESC LIMIT $limit OFFSET $offset");
+// $stmt = $pdo->prepare("SELECT * FROM records $where ORDER BY tanggal_masuk DESC LIMIT $limit OFFSET $offset");
+// $stmt->execute($params);
+// $records = $stmt->fetchAll();
+
+$stmt = $pdo->prepare("SELECT * FROM records $where ORDER BY id DESC LIMIT $limit OFFSET $offset");
 $stmt->execute($params);
 $records = $stmt->fetchAll();
 
@@ -115,6 +119,8 @@ $trendQuery = $pdo->query("
 $trendChartData = $trendQuery->fetchAll(PDO::FETCH_ASSOC);
 $trendlabels = array_column($trendChartData, 'bulan');
 $trendvalues = array_column($trendChartData, 'total');
+
+include __DIR__ . '/../../includes/header.php';
 ?>
 
 <!-- ======================= ROOT ALPINE ======================= -->
@@ -269,7 +275,13 @@ $trendvalues = array_column($trendChartData, 'total');
             <input type="text"   name="nama_pasien"    placeholder="Nama Pasien" required class="border p-2 rounded col-span-2">
             <input type="date"   name="tanggal_masuk" class="border p-2 rounded col-span-2 sm:col-span-1">
             <input type="date"   name="tanggal_keluar" class="border p-2 rounded col-span-2 sm:col-span-1">
-            <input type="text"   name="keterangan"     placeholder="Keterangan"  class="border p-2 rounded col-span-2">
+            <input list="keteranganList" name="keterangan" placeholder="Keterangan" class="border p-2 rounded col-span-2">
+            <datalist id="keteranganList">
+                <option value="Pulang Atas Persetujuan Dokter">
+                <option value="Meninggal">
+                <option value="Rujuk Ke > Tinggi">
+                <option value="Pulang APS">
+            </datalist>
 
             <div class="col-span-2 flex justify-end gap-2 mt-2">
                 <button type="button" @click="showAddModal = false"
@@ -305,7 +317,13 @@ $trendvalues = array_column($trendChartData, 'total');
             <input type="text"  name="nama_pasien"    :value="editData.nama_pasien"    required class="border p-2 rounded col-span-2">
             <input type="date"  name="tanggal_masuk"  :value="editData.tanggal_masuk"  class="border p-2 rounded col-span-2 sm:col-span-1">
             <input type="date"  name="tanggal_keluar" :value="editData.tanggal_keluar"  class="border p-2 rounded col-span-2 sm:col-span-1">
-            <input type="text"  name="keterangan"     :value="editData.keterangan"     class="border p-2 rounded col-span-2">
+            <input list="keteranganList" name="keterangan" placeholder="Keterangan" class="border p-2 rounded col-span-2">
+            <datalist id="keteranganList">
+                <option value="Pulang Atas Persetujuan Dokter">
+                <option value="Meninggal">
+                <option value="Rujuk Ke > Tinggi">
+                <option value="Pulang APS">
+            </datalist>
 
             <div class="col-span-2 flex justify-end gap-2 mt-2">
                 <button type="button" @click="showEditModal = false"

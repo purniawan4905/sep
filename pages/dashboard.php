@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . '/../includes/auth.php';
 requireLogin();
 require_once __DIR__ . '/../config/database.php';
-include __DIR__ . '/../includes/header.php';
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: /pencatatansep/login.php');
     exit();
@@ -75,6 +75,8 @@ $pasienHariIni = $stmtNotif->fetchColumn();
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
+
+include __DIR__ . '/../includes/header.php';
 ?>
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-extrabold text-gray-800">Dashboard</h1>

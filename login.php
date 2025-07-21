@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="hidden lg:flex flex-col justify-center text-white space-y-8 p-8 animate-fade-in-up">
       <div class="flex items-center space-x-4">
         <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
-          <i class="fas fa-heartbeat text-3xl text-white"></i>
+          <img src="assets/img/sbk2.png" class="w-8 h-8"></img>
         </div>
         <h1 class="text-4xl font-bold tracking-tight">RSU Sebening Kasih</h1>
       </div>

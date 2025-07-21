@@ -1,6 +1,5 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
-include __DIR__ . '/../../includes/header.php';
 require_once __DIR__ . '/../../config/database.php';   // sesuaikan path
 require_once __DIR__ . '/../../includes/auth.php';
 requireLogin();
@@ -82,6 +81,8 @@ $query = "SELECT * FROM diagnosa $where ORDER BY id DESC LIMIT $limit OFFSET $of
 $stmt  = $pdo->prepare($query);
 $stmt->execute($params);
 $rows  = $stmt->fetchAll();
+
+include __DIR__ . '/../../includes/header.php';
 
 /* ---------- DATA GRAFIK DIAGNOSA (TOP 5) ---------- */
 // $stmt = $pdo->query("
