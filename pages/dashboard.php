@@ -81,6 +81,12 @@ include __DIR__ . '/../includes/header.php';
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-extrabold text-gray-800">Dashboard</h1>
 
+    <!-- Jam & Tanggal Besar -->
+    <div class="text-right">
+        <!-- <div id="big-date" class="text-2xl font-bold text-gray-700"></div> -->
+        <div id="big-time" class="text-4xl font-extrabold bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent drop-shadow-lg tracking-widest animate-pulse"></div>
+    </div>
+
     <!-- Notifikasi -->
         <div class="relative group">
             <button class="bg-white text-gray-600 hover:text-blue-600 p-2 rounded-full shadow-sm border border-gray-200 focus:outline-none relative">
@@ -130,10 +136,31 @@ include __DIR__ . '/../includes/header.php';
              <div class="text-sm text-blue-500 mt-1">🛏️ Pasien Rawat Inap</div>
         </div>
 
-        <!-- Chart card -->
+        <!-- Aksi Cepat -->
         <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition duration-200">
-            <div class="text-gray-600 font-semibold text-lg mb-4">Visualisasi Data</div>
-            <canvas id="recordsChart" class="w-full h-64"></canvas>
+            <div class="text-gray-600 font-semibold text-lg mb-4">Aksi Cepat</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Tambah Data Rawat Inap -->
+                <a href="records/index.php"
+                class="flex flex-col items-center justify-center gap-2 bg-blue-600 text-white px-4 py-5 rounded-xl hover:bg-blue-700 transform hover:scale-105 transition duration-300 shadow-lg hover:shadow-blue-300 hover:shadow-xl">
+                    <i class="fa fa-procedures text-2xl"></i> 
+                    <span>Tambah Rawat Inap</span>
+                </a>
+
+                <!-- Tambah Data Diagnosa -->
+                <a href="diagnosa/index.php"
+                class="flex flex-col items-center justify-center gap-2 bg-green-600 text-white px-4 py-5 rounded-xl hover:bg-green-700 transform hover:scale-105 transition duration-300 shadow-lg hover:shadow-green-300 hover:shadow-xl">
+                    <i class="fa fa-stethoscope text-2xl"></i> 
+                    <span>Tambah Diagnosa</span>
+                </a>
+
+                <!-- Tambah Data ICD -->
+                <a href="icd/index.php"
+                class="flex flex-col items-center justify-center gap-2 bg-indigo-600 text-white px-4 py-5 rounded-xl hover:bg-indigo-700 transform hover:scale-105 transition duration-300 shadow-lg hover:shadow-indigo-300 hover:shadow-xl">
+                    <i class="fa fa-code text-2xl"></i> 
+                    <span>Tambah ICD</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -201,29 +228,20 @@ include __DIR__ . '/../includes/header.php';
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script>
-        /* ---------- BAR: Total Records ---------- */
-        const recCtx = document.getElementById('recordsChart').getContext('2d');
-        new Chart(recCtx, {
-        type:'bar',
-        data:{
-            labels:['Total Data'],
-            datasets:[{
-            label:'Jumlah Records',
-            data:[<?= $count ?>],
-            backgroundColor:'#3b82f6',
-            borderRadius:6
-            }]
-        },
-        options:{
-            responsive:true,
-            plugins:{
-            legend:{display:false},
-            tooltip:{callbacks:{label:ctx=>' '+ctx.parsed.y+' record'}}
-            },
-            scales:{ y:{beginAtZero:true,ticks:{stepSize:1}} }
+
+        /* Jam & Tanggal Besar */
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('big-time').textContent = now.toLocaleTimeString('id-ID', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
         }
-        });
+        setInterval(updateTime, 1000);
+        updateTime();
 
         /* ---------- LINE: Tren Pasien Masuk ---------- */
         const trenCtx = document.getElementById('trendChart').getContext('2d');
