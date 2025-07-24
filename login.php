@@ -335,4 +335,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     });
   </script>
 </body>
+
+<!-- Footer Marquee -->
+<footer class="absolute bottom-0 w-full bg-black/30 text-white text-center py-2 text-sm animate-fade-in-up">
+  <marquee behavior="scroll" direction="left" scrollamount="6" class="tracking-wide"> <span class="font-bold">@copyright 2025 - RSU Sebening Kasih | Developed with ❤️ by Agus Cah Ganteng 😎😛</span>
+  </marquee>
+</footer>
 </html>
