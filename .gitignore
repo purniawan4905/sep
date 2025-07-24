@@ -1,2 +1,9 @@
 /sep.sql
 /schema.sql
+
+/vendor/
+
+/composer.lock
+/composer.json
+/vendor/
+
