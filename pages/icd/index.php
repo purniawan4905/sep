@@ -67,7 +67,7 @@ if (isset($_GET['delete'])) {
 }
 
 /* ===== PAGINATION + SEARCH ===== */
-$limit = 8; // data per kolom
+$limit = 20; // data per kolom
 
 // --- ICD 10 ---
 $page10 = isset($_GET['page10']) ? max(1, intval($_GET['page10'])) : 1;
