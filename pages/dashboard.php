@@ -9,22 +9,23 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Ambil bulan dan tahun dari GET atau default
+$selectedMonth = $_GET['bulan'] ?? date('m');
+$selectedYear  = $_GET['tahun'] ?? date('Y');
+$selectedMonthYear = $selectedYear . '-' . $selectedMonth;
+
 // Ambil data total record
 $count = $pdo->query("SELECT COUNT(*) FROM records")->fetchColumn();
 
+// Grafik tren per bulan
 $chart = $pdo->query("
-    SELECT 
-        DATE_FORMAT(tanggal_masuk, '%Y-%m') as bulan,
-        COUNT(*) as total
+    SELECT DATE_FORMAT(tanggal_masuk, '%Y-%m') as bulan, COUNT(*) as total
     FROM records
     GROUP BY bulan
     ORDER BY bulan
 ")->fetchAll(PDO::FETCH_ASSOC);
-
 $labels = array_column($chart, 'bulan');
 $values = array_column($chart, 'total');
-
-// Rename agar lebih spesifik untuk grafik tren
 $trendlabels = $labels;
 $trendvalues = $values;
 
@@ -41,37 +42,52 @@ $kelas1 = array_column($diagData, 'kelas1');
 $kelas2 = array_column($diagData, 'kelas2');
 $kelas3 = array_column($diagData, 'kelas3');
 
-// Data pasien masuk per hari di bulan berjalan
-$currentMonth = date('Y-m');
+// Grafik Pasien Harian Bulan Ini
 $stmtHarian = $pdo->prepare("
-    SELECT 
-        DATE(tanggal_masuk) AS tanggal,
-        COUNT(*) AS total
+    SELECT DATE(tanggal_masuk) AS tanggal, COUNT(*) AS total
     FROM records
     WHERE DATE_FORMAT(tanggal_masuk, '%Y-%m') = ?
     GROUP BY tanggal
     ORDER BY tanggal
 ");
-$stmtHarian->execute([$currentMonth]);
+$stmtHarian->execute([$selectedMonthYear]);
 $dataHarian = $stmtHarian->fetchAll(PDO::FETCH_ASSOC);
-
-// Ambil semua tanggal dan nilai
-$harianLabels = array_column($dataHarian, 'tanggal');
+$harianLabels = array_map(function($tgl) {
+    return date('d M', strtotime($tgl));
+}, array_column($dataHarian, 'tanggal'));
 $harianValues = array_column($dataHarian, 'total');
 
-// Ambil data pasien yang masuk hari ini
+// Pasien hari ini
 $today = date('Y-m-d');
 $stmtToday = $pdo->prepare("SELECT * FROM records WHERE DATE(tanggal_masuk) = ?");
 $stmtToday->execute([$today]);
 $todayPatients = $stmtToday->fetchAll();
-
-// Ambil jumlah pasien masuk hari ini
-$today = date('Y-m-d');
 $stmtNotif = $pdo->prepare("SELECT COUNT(*) FROM records WHERE tanggal_masuk = ?");
 $stmtNotif->execute([$today]);
 $pasienHariIni = $stmtNotif->fetchColumn();
 
-// Mencegah akses dari tombol Back setelah logout
+$selectedMonthPulang = $_GET['bulan_pulang'] ?? date('m');
+$selectedYearPulang  = $_GET['tahun_pulang'] ?? date('Y');
+
+// Siapkan data harian pasien keluar
+$dataPulangHarian = [];
+$jumlahHari = cal_days_in_month(CAL_GREGORIAN, (int)$selectedMonthPulang, (int)$selectedYearPulang);
+for ($i = 1; $i <= $jumlahHari; $i++) {
+    $tanggal = sprintf('%04d-%02d-%02d', $selectedYearPulang, $selectedMonthPulang, $i);
+    $labelsPulangHarian[] = date('d M', strtotime($tanggal)); // contoh: 01 Jan
+    $dataPulangHarian[$i] = 0;
+}
+
+$stmt = $pdo->prepare("SELECT DAY(tanggal_keluar) AS hari, COUNT(*) AS total 
+                       FROM records 
+                       WHERE MONTH(tanggal_keluar) = ? AND YEAR(tanggal_keluar) = ?
+                       GROUP BY DAY(tanggal_keluar)");
+$stmt->execute([$selectedMonthPulang, $selectedYearPulang]);
+while ($row = $stmt->fetch()) {
+    $dataPulangHarian[(int)$row['hari']] = (int)$row['total'];
+}
+
+// Cache Control
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
@@ -170,10 +186,48 @@ include __DIR__ . '/../includes/header.php';
     <canvas id="trendChart" height="100"></canvas>
 </div>
 
-<!-- ======== GRAFIK PASIEN PER HARI BULAN INI ======== -->
+<!-- Grafik Harian -->
 <div class="mt-6 bg-white p-4 rounded shadow border border-gray-100 hover:shadow-xl transition duration-200">
-    <h2 class="text-xl font-bold mb-2">Jumlah Pasien Masuk Harian (<?= date('F Y') ?>)</h2>
+    <h2 class="text-xl font-bold">Jumlah Pasien Masuk Harian</h2>
+    <form method="get" class="flex gap-2 items-center mb-4">
+        <select name="bulan" class="border border-gray-300 rounded p-1 text-sm">
+            <?php for ($m = 1; $m <= 12; $m++):
+                $val = str_pad($m, 2, '0', STR_PAD_LEFT);
+                $label = date('F', mktime(0, 0, 0, $m, 1)); ?>
+                <option value="<?= $val ?>" <?= $val == $selectedMonth ? 'selected' : '' ?>><?= $label ?></option>
+            <?php endfor; ?>
+        </select>
+        <select name="tahun" class="border border-gray-300 rounded p-1 text-sm">
+            <?php $currentYear = date('Y');
+            for ($y = $currentYear; $y >= $currentYear - 5; $y--): ?>
+                <option value="<?= $y ?>" <?= $y == $selectedYear ? 'selected' : '' ?>><?= $y ?></option>
+            <?php endfor; ?>
+        </select>
+        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm">Tampilkan</button>
+    </form>
     <canvas id="chartPasienHarianBulanIni" height="100"></canvas>
+</div>
+
+<!-- Grafik Pasien Pulang Harian -->
+<div class="mt-6 bg-white p-4 rounded shadow border border-gray-100 hover:shadow-xl transition duration-200">
+    <h2 class="text-xl font-bold">Jumlah Pasien Pulang Harian</h2>
+    <form method="get" class="flex gap-2 items-center mb-4">
+        <select name="bulan_pulang" class="border border-gray-300 rounded p-1 text-sm">
+            <?php for ($m = 1; $m <= 12; $m++):
+                $val = str_pad($m, 2, '0', STR_PAD_LEFT);
+                $label = date('F', mktime(0, 0, 0, $m, 1)); ?>
+                <option value="<?= $val ?>" <?= ($val == $selectedMonthPulang) ? 'selected' : '' ?>><?= $label ?></option>
+            <?php endfor; ?>
+        </select>
+        <select name="tahun_pulang" class="border border-gray-300 rounded p-1 text-sm">
+            <?php $currentYear = date('Y');
+            for ($y = $currentYear; $y >= $currentYear - 5; $y--): ?>
+                <option value="<?= $y ?>" <?= ($y == $selectedYearPulang) ? 'selected' : '' ?>><?= $y ?></option>
+            <?php endfor; ?>
+        </select>
+        <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm">Tampilkan</button>
+    </form>
+    <canvas id="chartPasienPulangHarian" height="100"></canvas>
 </div>
 
 <!-- ======== GRAFIK DIAGNOSA ======== -->
@@ -365,5 +419,56 @@ new Chart(ctxHarian, {
         }
     }
 });
+
+const labelsPulang = <?= json_encode($labelsPulangHarian) ?>;
+    const dataPulang = <?= json_encode(array_values($dataPulangHarian)) ?>;
+
+    new Chart(document.getElementById('chartPasienPulangHarian').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labelsPulang,
+            datasets: [{
+                label: 'Jumlah Pasien Pulang',
+                data: dataPulang,
+                backgroundColor: 'rgba(195, 64, 255, 0.2)',
+                borderColor: 'rgba(195, 64, 255, 1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 2,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tanggal'
+                    },
+                    ticks: {
+                        maxRotation: 90,
+                        minRotation: 45,
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Pasien'
+                    }
+                }
+            }
+        }
+    });
 </script>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
