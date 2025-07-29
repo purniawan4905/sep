@@ -59,11 +59,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tanggal_keluar = $_POST['tanggal_keluar'] ?? '';
         $keterangan     = $_POST['keterangan'] ?? '';
 
-        $stmt = $pdo->prepare("INSERT INTO records (no_rm, no_sep, nama_pasien, tanggal_masuk, tanggal_keluar, keterangan)
-                               VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$no_rm, $no_sep, $nama_pasien, $tanggal_masuk, $tanggal_keluar, $keterangan]);
+        $cek = $pdo->prepare("SELECT COUNT(*) FROM records WHERE no_sep = ?");
+        $cek->execute([$no_sep]);
+        $jumlah = $cek->fetchColumn();
 
-        header("Location: index.php?status=created");
+        if ($jumlah > 0) {
+            $_SESSION['alert'] = [
+                'icon' => 'warning',
+                'title' => 'Gagal Boskuuhh 😁',
+                'text' => 'No. SEP sudah terdaftar!'
+            ];
+        } else {
+            $stmt = $pdo->prepare("INSERT INTO records (no_rm, no_sep, nama_pasien, tanggal_masuk, tanggal_keluar, keterangan)
+                                   VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$no_rm, $no_sep, $nama_pasien, $tanggal_masuk, $tanggal_keluar, $keterangan]);
+
+            $_SESSION['alert'] = [
+                'icon' => 'success',
+                'title' => 'Sukses',
+                'text' => 'Data berhasil disimpan!'
+            ];
+        }
+
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
 
@@ -80,10 +98,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                WHERE id = ?");
         $stmt->execute([$no_rm, $no_sep, $nama_pasien, $tanggal_masuk, $tanggal_keluar, $keterangan, $id]);
 
+        $_SESSION['alert'] = [
+            'icon' => 'success',
+            'title' => 'Sukses',
+            'text' => 'Data berhasil diupdate!'
+        ];
+
         header("Location: index.php?status=updated");
         exit;
     }
 }
+
 
 $countQuery = "SELECT COUNT(*) FROM records $where";
 $stmt = $pdo->prepare($countQuery);
@@ -211,16 +236,77 @@ include __DIR__ . '/../../includes/header.php';
             </tr>
             </thead>
             <tbody class="text-gray-700">
+                <?php
+                    // Hitung jumlah kemunculan tiap no_rm dan no_sep
+                    $count_rm = [];
+                    $count_sep = [];
+
+                    foreach ($records as $r) {
+                        $count_rm[$r['no_rm']] = ($count_rm[$r['no_rm']] ?? 0) + 1;
+                        $count_sep[$r['no_sep']] = ($count_sep[$r['no_sep']] ?? 0) + 1;
+                    }
+
+                // Ambil data yang duplikat (jumlah > 1)
+                $duplicate_rm = array_filter($count_rm, function($count) {
+                    return $count > 1;
+                });
+                $duplicate_sep = array_filter($count_sep, function($count) {
+                    return $count > 1;
+                });
+                ?>
+
+                <?php if (!empty($duplicate_rm) || !empty($duplicate_sep)): ?>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    <strong class="font-semibold">⚠️ Duplikat Ditemukan!</strong>
+                    <p class="mt-1 text-sm">Beberapa data <strong>No RM</strong> atau <strong>No SEP</strong> tercatat lebih dari sekali. Harap periksa data berikut:</p>
+
+                    <?php if (!empty($duplicate_rm)): ?>
+                        <div class="mt-3">
+                            <p class="font-semibold text-sm">📌 Duplikat No RM:</p>
+                            <ul class="list-disc list-inside text-sm text-red-800">
+                                <?php foreach ($duplicate_rm as $rm => $count): ?>
+                                    <li>No RM: <strong><?= htmlspecialchars($rm) ?></strong> (<?= $count ?>x)</li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($duplicate_sep)): ?>
+                        <div class="mt-3">
+                            <p class="font-semibold text-sm">📌 Duplikat No SEP:</p>
+                            <ul class="list-disc list-inside text-sm text-red-800">
+                                <?php foreach ($duplicate_sep as $sep => $count): ?>
+                                    <li>No SEP: <strong>0158R011<?= htmlspecialchars($sep) ?></strong> (<?= $count ?>x)</li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
             <?php $no = $offset + 1;
             foreach ($records as $row): ?>
-                <tr class="border-t hover:bg-gray-50">
+            <?php
+                    $isDuplicateRM = isset($duplicate_rm[$row['no_rm']]);
+                    $isDuplicateSEP = isset($duplicate_sep[str_replace('0158R011', '', $row['no_sep'])]);
+                    $highlightClass = ($isDuplicateRM || $isDuplicateSEP) ? 'bg-red-100' : '';$isDuplicate = in_array($row['no_rm'], $duplicate_rm) || in_array($row['no_sep'], $duplicate_sep);
+                    $trClass = $isDuplicate ? 'bg-red-100' : 'hover:bg-gray-50';
+                    ?>
+                <tr class="<?= $highlightClass ?>">
                     <td class="px-4 py-2 text-center"><?= $no++ ?></td>
                     <td class="px-4 py-2"><?= htmlspecialchars($row['no_rm']) ?></td>
                     <td class="px-4 py-2">0158R011<?= htmlspecialchars($row['no_sep']) ?></td>
-                    <td class="px-4 py-2"><?= htmlspecialchars($row['nama_pasien']) ?></td>
-                    <td class="px-4 py-2"><?= htmlspecialchars($row['tanggal_masuk']) ?></td>
-                    <td class="px-4 py-2"><?= htmlspecialchars($row['tanggal_keluar']) ?></td>
-                    <td class="px-4 py-2"><?= htmlspecialchars($row['keterangan']) ?></td>
+                    <td class="px-4 py-2 editable" data-id="<?= $row['id'] ?>" data-field="nama_pasien">
+                        <?= htmlspecialchars($row['nama_pasien']) ?>
+                    </td>
+                    <td class="px-4 py-2 editable" data-id="<?= $row['id'] ?>" data-field="tanggal_masuk">
+                        <?= htmlspecialchars($row['tanggal_masuk']) ?>
+                    </td>
+                    <td class="px-4 py-2 editable" data-id="<?= $row['id'] ?>" data-field="tanggal_keluar">
+                        <?= htmlspecialchars($row['tanggal_keluar']) ?>
+                    </td>
+                    <td class="px-4 py-2 editable" data-id="<?= $row['id'] ?>" data-field="keterangan">
+                        <?= htmlspecialchars($row['keterangan']) ?>
+                    </td>
                     <td class="px-4 py-2 text-center space-x-2">
                         <!-- buka modal edit -->
                         <a href="#"
@@ -390,6 +476,14 @@ Swal.fire({
     showConfirmButton: false
 });
 <?php endif; ?>
+
+<?php if (isset($_SESSION['alert'])): ?>
+    Swal.fire({
+        icon: '<?= $_SESSION['alert']['icon'] ?>',
+        title: '<?= $_SESSION['alert']['title'] ?>',
+        text: '<?= $_SESSION['alert']['text'] ?>'
+    });
+<?php unset($_SESSION['alert']); endif; ?>
 </script>
 
 <?php include __DIR__ . '/../../includes/footer.php'; ?>
