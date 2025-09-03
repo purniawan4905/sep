@@ -80,37 +80,120 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-    :root {
-      --primary-500: #0ea5e9;
-      --primary-600: #0284c7;
-      --secondary-500: #a855f7;
-      --secondary-600: #9333ea;
-    }
-    
     body {
-      background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
-      background-size: 200% 200%;
-      animation: gradientShift 10s ease infinite;
       font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #faf5ff 100%);
+      min-height: 100vh;
     }
 
-    @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .glass-3d {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 
+        0 20px 40px rgba(14, 165, 233, 0.15),
+        0 10px 20px rgba(168, 85, 247, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+      transform-style: preserve-3d;
+      transition: all 0.4s ease;
     }
 
-    .glass {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    .glass-3d:hover {
+      transform: translateY(-5px) rotateX(2deg);
+      box-shadow: 
+        0 25px 50px rgba(14, 165, 233, 0.2),
+        0 15px 30px rgba(168, 85, 247, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
     }
 
-    .glass:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+    .btn-gradient-3d {
+      background: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
+      box-shadow: 
+        0 4px 14px rgba(168, 85, 247, 0.35),
+        0 6px 20px rgba(14, 165, 233, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      transition: all 0.3s ease;
+      transform: translateY(0);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-gradient-3d:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn-gradient-3d:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 8px 22px rgba(168, 85, 247, 0.4),
+        0 10px 24px rgba(14, 165, 233, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-gradient-3d:hover:before {
+      left: 100%;
+    }
+
+    .btn-gradient-3d:active {
+      transform: translateY(1px);
+      box-shadow: 
+        0 2px 10px rgba(168, 85, 247, 0.3),
+        0 4px 12px rgba(14, 165, 233, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .input-3d {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 14px;
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.05),
+        0 4px 12px rgba(14, 165, 233, 0.1),
+        0 0 0 1px rgba(14, 165, 233, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .input-3d:focus {
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.05),
+        0 6px 20px rgba(14, 165, 233, 0.15),
+        0 0 0 2px rgba(14, 165, 233, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .floating {
+      animation: floating 6s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+      0% { transform: translate(0, 0px); }
+      50% { transform: translate(0, 15px); }
+      100% { transform: translate(0, -0px); }
+    }
+
+    .password-strength {
+      height: 6px;
+      background: rgba(0, 0, 0, 0.1);
+      margin-top: 8px;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .password-strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background 0.3s ease;
+      border-radius: 3px;
     }
 
     @keyframes fade-in-up {
@@ -125,75 +208,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .animate-delay-100 {
       animation-delay: 0.1s;
     }
+    .animate-delay-150 {
+      animation-delay: 0.15s;
+    }
     .animate-delay-200 {
       animation-delay: 0.2s;
     }
     .animate-delay-300 {
       animation-delay: 0.3s;
     }
-
-    .input-field {
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.85);
-    }
-
-    .input-field:focus {
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
-    }
-
-    .btn-gradient {
-      background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-    }
-
-    .btn-gradient:hover {
-      background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-    }
-
-    .btn-gradient:active {
-      transform: translateY(0);
-    }
-
-    .password-strength {
-      height: 4px;
-      background: rgba(255, 255, 255, 0.2);
-      margin-top: 4px;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .password-strength-fill {
-      height: 100%;
-      width: 0%;
-      background: #10b981;
-      transition: width 0.3s ease, background 0.3s ease;
+    .animate-delay-400 {
+      animation-delay: 0.4s;
     }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center text-gray-800 antialiased">
-  <!-- Floating Background Shapes -->
+<body class="min-h-screen flex items-center justify-center text-gray-800 antialiased p-4">
+  <!-- Background Elements -->
   <div class="absolute inset-0 overflow-hidden pointer-events-none">
     <!-- Floating circles -->
-    <div class="absolute w-64 h-64 rounded-full bg-white/5 blur-xl top-1/4 -left-16"></div>
-    <div class="absolute w-72 h-72 rounded-full bg-white/5 blur-xl bottom-1/4 -right-16"></div>
+    <div class="absolute w-64 h-64 rounded-full bg-primary-200/30 blur-xl top-1/4 -left-16"></div>
+    <div class="absolute w-72 h-72 rounded-full bg-secondary-200/30 blur-xl bottom-1/4 -right-16"></div>
     
     <!-- Floating triangles -->
-    <div class="absolute w-40 h-40 bg-white/5 blur-xl top-1/3 right-1/4" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
-    <div class="absolute w-48 h-48 bg-white/5 blur-xl bottom-1/3 left-1/4" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+    <div class="absolute w-40 h-40 bg-primary-300/20 blur-xl top-1/3 right-1/4" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
+    <div class="absolute w-48 h-48 bg-secondary-300/20 blur-xl bottom-1/3 left-1/4" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
   </div>
 
-  <div class="w-full max-w-md px-6">
-    <div class="glass p-10 rounded-2xl shadow-2xl w-full animate-fade-in-up">
+  <div class="w-full max-w-md">
+    <div class="glass-3d p-10 w-full">
       <div class="text-center mb-8">
-        <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 shadow-lg mx-auto mb-4">
+        <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary-400 to-secondary-400 shadow-lg mx-auto mb-4 floating">
           <i class="fas fa-user-plus text-3xl text-white"></i>
         </div>
-        <h2 class="text-3xl font-bold text-white">Buat Akun Baru</h2>
-        <p class="text-white/80 mt-2">Isi formulir untuk mendaftar</p>
+        <h2 class="text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Buat Akun Baru</h2>
+        <p class="text-gray-600 mt-2">Isi formulir untuk mendaftar</p>
       </div>
 
       <?php if ($error): ?>
@@ -202,8 +250,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             icon: 'error',
             title: 'Gagal Mendaftar',
             text: '<?= $error ?>',
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdrop: 'rgba(0, 0, 0, 0.4)'
+            background: 'rgba(255, 255, 255, 0.95)',
+            color: '#000',
+            confirmButtonColor: '#0ea5e9'
           });
         </script>
       <?php endif; ?>
@@ -211,57 +260,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <form method="POST" autocomplete="off" class="space-y-6">
         <!-- Full Name -->
         <div class="space-y-2 animate-fade-in-up animate-delay-100">
-          <label for="fullname" class="block text-sm font-medium text-white/90">Nama Lengkap</label>
+          <label for="fullname" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-user text-gray-400"></i>
+              <i class="fas fa-user text-primary-500"></i>
             </div>
             <input type="text" name="fullname" id="fullname" required
-                   class="input-field w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-0">
+                   class="input-3d w-full pl-10 pr-4 py-4 focus:outline-none">
           </div>
         </div>
 
         <!-- Username -->
         <div class="space-y-2 animate-fade-in-up animate-delay-150">
-          <label for="username" class="block text-sm font-medium text-white/90">Username</label>
+          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-at text-gray-400"></i>
+              <i class="fas fa-at text-primary-500"></i>
             </div>
             <input type="text" name="username" id="username" required
-                   class="input-field w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-0">
+                   class="input-3d w-full pl-10 pr-4 py-4 focus:outline-none">
           </div>
         </div>
 
         <!-- Password -->
         <div class="space-y-2 animate-fade-in-up animate-delay-200">
-          <label for="password" class="block text-sm font-medium text-white/90">Password</label>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
           <div class="relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-lock text-gray-400"></i>
+              <i class="fas fa-lock text-primary-500"></i>
             </div>
             <input type="password" name="password" id="password" required
-                   class="input-field w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-0"
+                   class="input-3d w-full pl-10 pr-12 py-4 focus:outline-none"
                    oninput="checkPasswordStrength(this.value)">
             <button type="button" onclick="togglePassword()"
-                    class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors">
+                    class="absolute right-3 top-4 text-primary-500 hover:text-primary-700 transition-colors">
               <i class="far fa-eye"></i>
             </button>
           </div>
           <div class="password-strength">
             <div class="password-strength-fill" id="password-strength-bar"></div>
           </div>
-          <p class="text-xs text-white/70 mt-1">Gunakan minimal 8 karakter dengan kombinasi huruf dan angka</p>
+          <p class="text-xs text-gray-500 mt-1">Gunakan minimal 8 karakter dengan kombinasi huruf dan angka</p>
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="btn-gradient w-full text-white font-semibold py-3.5 rounded-xl mt-6 animate-fade-in-up animate-delay-300">
+        <button type="submit" class="btn-gradient-3d w-full text-white font-semibold py-4 rounded-xl mt-6 animate-fade-in-up animate-delay-300">
           Daftar Sekarang
         </button>
 
-        <div class="text-center text-sm text-white/80 mt-6 animate-fade-in-up animate-delay-400">
+        <div class="text-center text-gray-600 mt-6 animate-fade-in-up animate-delay-400">
           Sudah punya akun? 
-          <a href="login.php" class="font-medium text-white hover:text-primary-200 underline underline-offset-4 transition-colors">
+          <a href="login.php" class="font-medium text-primary-600 hover:text-primary-800 underline underline-offset-4 transition-colors">
             Login disini
           </a>
         </div>
@@ -314,12 +363,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Add input focus effects
-    document.querySelectorAll('.input-field').forEach(input => {
+    document.querySelectorAll('.input-3d').forEach(input => {
       input.addEventListener('focus', function() {
-        this.parentElement.querySelector('i').classList.add('text-primary-500');
+        this.parentElement.querySelector('i').classList.add('text-secondary-500');
       });
       input.addEventListener('blur', function() {
-        this.parentElement.querySelector('i').classList.remove('text-primary-500');
+        this.parentElement.querySelector('i').classList.remove('text-secondary-500');
       });
     });
   </script>

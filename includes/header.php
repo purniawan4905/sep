@@ -68,6 +68,18 @@ if (session_status() === PHP_SESSION_NONE) session_start();
         </svg>
         <span>Data ICD</span>
       </a>
+
+      <!-- Data Dokumen -->
+      <a href="/pencatatansep/pages/dokumen/index.php"
+        class="flex items-center gap-3 py-2 px-4 rounded-lg hover:bg-blue-50 transition text-gray-700 group">
+        <svg class="h-5 w-5 text-yellow-500 group-hover:text-yellow-700 transition" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 7h10M7 11h10M7 15h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" />
+        </svg>
+        <span>Data Dokumen</span>
+      </a>
+
           </nav>
         </div>
 

@@ -29,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="Shortcut Icon" href="assets/img/favicon.ico">
   <title>Login – Pencatatan SEP</title>
+  <link rel="Shortcut Icon" href="assets/img/favicon.ico">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -42,279 +42,251 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'sans': ['Inter', 'sans-serif'],
           },
           colors: {
-            primary: {
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              200: '#bae6fd',
-              300: '#7dd3fc',
-              400: '#38bdf8',
-              500: '#0ea5e9',
-              600: '#0284c7',
-              700: '#0369a1',
-              800: '#075985',
-              900: '#0c4a6e',
-            },
-            secondary: {
-              50: '#faf5ff',
-              100: '#f3e8ff',
-              200: '#e9d5ff',
-              300: '#d8b4fe',
-              400: '#c084fc',
-              500: '#a855f7',
-              600: '#9333ea',
-              700: '#7e22ce',
-              800: '#6b21a8',
-              900: '#581c87',
-            }
+            primary: { 50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1' },
+            secondary: { 50: '#faf5ff', 100: '#f3e8ff', 200: '#e9d5ff', 300: '#d8b4fe', 400: '#c084fc', 500: '#a855f7', 600: '#9333ea', 700: '#7c3aed' },
           }
         }
       }
     }
   </script>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Particles.js -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <!-- Font Awesome -->
+
+  <!-- Font & Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-  :root {
-    --primary-500: #0ea5e9;
-    --primary-600: #0284c7;
-    --secondary-500: #a855f7;
-    --secondary-600: #9333ea;
-  }
-  
-  body {
-    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
-    background-size: 200% 200%;
-    animation: gradientShift 10s ease infinite;
-    font-family: 'Inter', sans-serif;
-  }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #faf5ff 100%);
+      min-height: 100vh;
+    }
 
-  @keyframes gradientShift {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+    .glass-3d {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 
+        0 20px 40px rgba(14, 165, 233, 0.15),
+        0 10px 20px rgba(168, 85, 247, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+      transform-style: preserve-3d;
+      transition: all 0.4s ease;
+    }
 
-  .glass {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  }
+    .glass-3d:hover {
+      transform: translateY(-5px) rotateX(2deg);
+      box-shadow: 
+        0 25px 50px rgba(14, 165, 233, 0.2),
+        0 15px 30px rgba(168, 85, 247, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
 
-  .glass:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-  }
+    .btn-gradient-3d {
+      background: linear-gradient(135deg, #0ea5e9 0%, #a855f7 100%);
+      box-shadow: 
+        0 4px 14px rgba(168, 85, 247, 0.35),
+        0 6px 20px rgba(14, 165, 233, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      transition: all 0.3s ease;
+      transform: translateY(0);
+      position: relative;
+      overflow: hidden;
+    }
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-15px); }
-  }
+    .btn-gradient-3d:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: all 0.5s ease;
+    }
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
+    .btn-gradient-3d:hover {
+      transform: translateY(-3px);
+      box-shadow: 
+        0 8px 22px rgba(168, 85, 247, 0.4),
+        0 10px 24px rgba(14, 165, 233, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
 
-  .animate-float-delay {
-    animation: float 8s ease-in-out infinite;
-    animation-delay: 1.5s;
-  }
+    .btn-gradient-3d:hover:before {
+      left: 100%;
+    }
 
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
+    .btn-gradient-3d:active {
+      transform: translateY(1px);
+      box-shadow: 
+        0 2px 10px rgba(168, 85, 247, 0.3),
+        0 4px 12px rgba(14, 165, 233, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
 
-  .animate-spin-slow {
-    animation: spin 12s linear infinite;
-  }
+    .input-3d {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 14px;
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.05),
+        0 4px 12px rgba(14, 165, 233, 0.1),
+        0 0 0 1px rgba(14, 165, 233, 0.1);
+      transition: all 0.3s ease;
+    }
 
-  @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+    .input-3d:focus {
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.05),
+        0 6px 20px rgba(14, 165, 233, 0.15),
+        0 0 0 2px rgba(14, 165, 233, 0.3);
+      transform: translateY(-2px);
+    }
 
-  .animate-fade-in-up {
-    animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
+    .logo-3d {
+      filter: drop-shadow(0 8px 12px rgba(14, 165, 233, 0.2));
+      transition: all 0.4s ease;
+    }
 
-  .animate-delay-100 {
-    animation-delay: 0.1s;
-  }
-  .animate-delay-200 {
-    animation-delay: 0.2s;
-  }
-  .animate-delay-300 {
-    animation-delay: 0.3s;
-  }
+    .logo-3d:hover {
+      transform: translateY(-5px) rotate(5deg);
+      filter: drop-shadow(0 12px 16px rgba(14, 165, 233, 0.3));
+    }
 
-  .input-field {
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.85);
-  }
+    .floating {
+      animation: floating 6s ease-in-out infinite;
+    }
 
-  .input-field:focus {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
-  }
+    @keyframes floating {
+      0% { transform: translate(0, 0px); }
+      50% { transform: translate(0, 15px); }
+      100% { transform: translate(0, -0px); }
+    }
 
-  .btn-gradient {
-    background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
-  }
-
-  .btn-gradient:hover {
-    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-  }
-
-  .btn-gradient:active {
-    transform: translateY(0);
-  }
-
-  .floating-shapes {
-    filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04)) drop-shadow(0 4px 3px rgba(0, 0, 0, 0.1));
-  }
-</style>
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center text-gray-800 antialiased">
-  <!-- Floating Background Shapes -->
-  <div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <!-- Floating circles -->
-    <div class="absolute w-64 h-64 rounded-full bg-white/5 blur-xl top-1/4 -left-16 animate-float"></div>
-    <div class="absolute w-72 h-72 rounded-full bg-white/5 blur-xl bottom-1/4 -right-16 animate-float-delay"></div>
-    
-    <!-- Floating triangles -->
-    <div class="absolute w-40 h-40 bg-white/5 blur-xl top-1/3 right-1/4 animate-pulse-slow" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
-    <div class="absolute w-48 h-48 bg-white/5 blur-xl bottom-1/3 left-1/4 animate-pulse-slow" style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%);"></div>
-  </div>
+<body class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
 
-  <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 px-6">
-    <!-- Left Branding Section -->
-    <div class="hidden lg:flex flex-col justify-center text-white space-y-8 p-8 animate-fade-in-up">
-      <div class="flex items-center space-x-4">
-        <div class="w-14 h-14 flex items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm">
-          <img src="assets/img/sbk2.png" class="w-8 h-8"></img>
+  <!-- Login Container -->
+  <div class="relative z-10 max-w-5xl w-full mx-6 md:mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 p-8">
+    <!-- Left Side -->
+    <div class="hidden md:flex flex-col justify-center space-y-8 floating">
+      <div class="flex items-center space-x-4 logo-3d">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center p-2 shadow-xl">
+          <img src="assets/img/sbk2.png" alt="Logo" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-4xl font-bold tracking-tight">RSU Sebening Kasih</h1>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">RSU Sebening Kasih</h1>
       </div>
-      
-      <p class="text-lg leading-relaxed text-white/90 max-w-md">
-        Sistem pencatatan SEP terintegrasi untuk rawat inap. Akses data pasien dengan cepat dan aman.
+      <p class="text-gray-700 text-lg leading-relaxed">
+        Sistem pencatatan SEP terintegrasi untuk rawat inap. Akses data pasien dengan cepat dan aman melalui dashboard interaktif.
       </p>
-      
-      <div class="mt-6 space-y-4">
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
-            <i class="fas fa-check text-sm text-white"></i>
+      <ul class="space-y-4 text-gray-600">
+        <li class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+            <i class="fas fa-bolt text-primary-600"></i>
           </div>
-          <span class="text-white/90">Akses cepat dan real-time</span>
-        </div>
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
-            <i class="fas fa-check text-sm text-white"></i>
+          <span>Akses cepat dan real-time</span>
+        </li>
+        <li class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+            <i class="fas fa-shield-alt text-primary-600"></i>
           </div>
-          <span class="text-white/90">Keamanan data terjamin</span>
-        </div>
-        <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
-            <i class="fas fa-check text-sm text-white"></i>
+          <span>Keamanan data terjamin</span>
+        </li>
+        <li class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center">
+            <i class="fas fa-paint-brush text-primary-600"></i>
           </div>
-          <span class="text-white/90">Antarmuka modern dan intuitif</span>
-        </div>
-      </div>
+          <span>Antarmuka modern dan responsif</span>
+        </li>
+      </ul>
     </div>
 
-    <!-- Right Login Form -->
-    <div class="glass p-10 rounded-2xl shadow-2xl w-full animate-fade-in-up animate-delay-100">
+    <!-- Login Form -->
+    <div class="glass-3d p-10 w-full">
       <div class="text-center mb-8">
-        <div class="w-20 h-20 flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-500 shadow-lg mx-auto mb-4">
-          <i class="fas fa-user-md text-3xl text-white"></i>
+        <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center mb-6 shadow-lg">
+          <i class="fas fa-user-md text-white text-3xl"></i>
         </div>
-        <h2 class="text-3xl font-bold text-white">Selamat Datang</h2>
-        <p class="text-white/80 mt-2">Masuk untuk mengakses dashboard</p>
+        <h2 class="text-3xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Selamat Datang</h2>
+        <p class="text-gray-600 mt-2">Silakan login untuk melanjutkan</p>
       </div>
 
       <?php if ($error): ?>
         <script>
           Swal.fire({
             icon: 'error',
-            title: 'Gagal Login',
+            title: 'Login Gagal',
             text: '<?= $error ?>',
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdrop: 'rgba(0, 0, 0, 0.4)'
+            background: 'rgba(255, 255, 255, 0.95)',
+            color: '#000',
+            confirmButtonColor: '#0ea5e9'
           });
         </script>
       <?php endif; ?>
 
       <form method="POST" autocomplete="off" class="space-y-6">
-        <!-- Username -->
-        <div class="space-y-2 animate-fade-in-up animate-delay-200">
-          <label for="username" class="block text-sm font-medium text-white/90">Username</label>
+        <div>
+          <label for="username" class="block text-sm mb-2 font-medium text-gray-700">Username</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-user text-gray-400"></i>
-            </div>
-            <input type="text" name="username" id="username" required
-                   class="input-field w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-0">
+            <span class="absolute left-4 top-4 text-primary-500"><i class="fas fa-user"></i></span>
+            <input type="text" id="username" name="username" required
+              class="input-3d w-full pl-12 pr-4 py-4 text-gray-800 focus:outline-none">
           </div>
         </div>
 
-        <!-- Password -->
-        <div class="space-y-2 animate-fade-in-up animate-delay-300">
-          <label for="password" class="block text-sm font-medium text-white/90">Password</label>
+        <div>
+          <label for="password" class="block text-sm mb-2 font-medium text-gray-700">Password</label>
           <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-lock text-gray-400"></i>
-            </div>
-            <input type="password" name="password" id="password" required
-                   class="input-field w-full pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:ring-0">
-            <button type="button" onclick="togglePassword()"
-                    class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors">
-              <i class="far fa-eye"></i>
+            <span class="absolute left-4 top-4 text-primary-500"><i class="fas fa-lock"></i></span>
+            <input type="password" id="password" name="password" required
+              class="input-3d w-full pl-12 pr-12 py-4 text-gray-800 focus:outline-none">
+            <button type="button" onclick="togglePassword()" class="absolute right-4 top-4 text-primary-500 hover:text-primary-700">
+              <i class="far fa-eye" id="eye-icon"></i>
             </button>
           </div>
         </div>
 
-        <!-- Remember Me & Forgot Password -->
-        <div class="flex items-center justify-between animate-fade-in-up animate-delay-300">
-          <div class="flex items-center">
-            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500">
-            <label for="remember" class="ml-2 block text-sm text-white/80">Ingat saya</label>
-          </div>
-          <div class="text-sm">
-            <a href="#" class="font-medium text-white hover:text-primary-200 transition-colors">Lupa password?</a>
-          </div>
+        <div class="flex items-center justify-between text-sm text-gray-600">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" class="h-4 w-4 text-primary-500 focus:ring-primary-400 border-gray-300 rounded">
+            Ingat saya
+          </label>
+          <a href="#" class="text-primary-600 hover:text-primary-800 font-medium hover:underline">Lupa password?</a>
         </div>
 
-        <button type="submit" class="btn-gradient w-full text-white font-semibold py-3.5 rounded-xl mt-6 animate-fade-in-up animate-delay-400">
-          Masuk Sekarang
-        </button>
+        <button type="submit" class="btn-gradient-3d w-full py-4 text-white font-semibold text-lg">Masuk</button>
 
-        <div class="text-center text-sm text-white/80 mt-6 animate-fade-in-up animate-delay-500">
+        <p class="text-center text-gray-600 mt-6">
           Belum punya akun? 
-          <a href="register.php" class="font-medium text-white hover:text-primary-200 underline underline-offset-4 transition-colors">
-            Daftar disini
-          </a>
-        </div>
+          <a href="register.php" class="text-primary-600 hover:text-primary-800 font-medium hover:underline">Daftar disini</a>
+        </p>
       </form>
     </div>
   </div>
 
-  <!-- Toggle Password JS -->
+  <!-- JS: Toggle Password -->
   <script>
     function togglePassword() {
       const pwd = document.getElementById('password');
-      const icon = document.querySelector('#password + button i');
+      const icon = document.getElementById('eye-icon');
       if (pwd.type === 'password') {
         pwd.type = 'text';
         icon.classList.replace('fa-eye', 'fa-eye-slash');
@@ -323,22 +295,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         icon.classList.replace('fa-eye-slash', 'fa-eye');
       }
     }
+  </script>
 
-    // Add input focus effects
-    document.querySelectorAll('.input-field').forEach(input => {
-      input.addEventListener('focus', function() {
-        this.parentElement.querySelector('i').classList.add('text-primary-500');
-      });
-      input.addEventListener('blur', function() {
-        this.parentElement.querySelector('i').classList.remove('text-primary-500');
-      });
+  <!-- Init Particle.js -->
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: ["#0ea5e9", "#a855f7", "#7dd3fc", "#c084fc"] },
+        shape: { type: "circle" },
+        opacity: { value: 0.25, random: true },
+        size: { value: 4, random: true },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: "#7dd3fc",
+          opacity: 0.2,
+          width: 1
+        },
+        move: { 
+          enable: true, 
+          speed: 2,
+          direction: "none",
+          random: true,
+          straight: false,
+          out_mode: "out",
+          bounce: false
+        }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" },
+          resize: true
+        },
+        modes: {
+          repulse: { distance: 100, duration: 0.4 },
+          push: { particles_nb: 6 }
+        }
+      },
+      retina_detect: true
     });
   </script>
 </body>
-
-<!-- Footer Marquee -->
-<footer class="absolute bottom-0 w-full bg-black/30 text-white text-center py-2 text-sm animate-fade-in-up">
-  <marquee behavior="scroll" direction="left" scrollamount="6" class="tracking-wide"> <span class="font-bold">@copyright 2025 - RSU Sebening Kasih | Developed with ❤️ by Agus Cah Ganteng 😎😛</span>
+<footer class="absolute bottom-0 w-full text-center py-3 text-sm text-white bg-gradient-to-r from-primary-500 to-secondary-500">
+  <marquee behavior="scroll" direction="left" scrollamount="5" class="tracking-wide">
+    © 2025 – RSU Sebening Kasih | Developed with ❤️ by Agus Cah Ganteng 😎
   </marquee>
 </footer>
 </html>

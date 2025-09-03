@@ -9,6 +9,14 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$showDisclaimer = false;
+// cek apakah baru login
+if (empty($_SESSION['just_logged_in'])) {
+    $_SESSION['just_logged_in'] = true;
+    $showDisclaimer = true;
+}
+
+
 // Ambil bulan dan tahun dari GET atau default
 $selectedMonth = $_GET['bulan'] ?? date('m');
 $selectedYear  = $_GET['tahun'] ?? date('Y');
@@ -96,6 +104,36 @@ include __DIR__ . '/../includes/header.php';
 ?>
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-extrabold text-gray-800">Dashboard</h1>
+
+    <?php if ($showDisclaimer): ?>
+        <script>
+            Swal.fire({
+            title: 'Disclaimer ⚠️',
+            html: `
+                <p class="text-center leading-relaxed">
+                Sistem ini hanya untuk kepentingan internal RSU Sebening Kasih.<br><br>
+                Dilarang menyalahgunakan data pasien maupun informasi yang ada di dalam sistem.<br><br>
+                <b>Semangat Kerja, Meskipun Jiwa Meronta ronta 😎</b>
+                </p>
+            `,
+            icon: 'info',
+            confirmButtonText: 'Siap, Gaskeun 🚀',
+            confirmButtonColor: '#0ea5e9',
+            background: 'rgba(255, 255, 255, 0.95)',
+            color: '#000',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown animate__faster'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp animate__faster'
+            }
+            });
+        </script>
+        <!-- CDN Animate.css buat efek fade-in -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+        <?php endif; ?>
 
     <!-- Jam & Tanggal Besar -->
     <div class="text-right">
