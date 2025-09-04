@@ -156,10 +156,18 @@ include __DIR__ . '/../../includes/header.php';
         <h1 class="text-2xl font-bold">Data Rawat Inap</h1>
 
         <!-- Tombol buka modal tambah -->
+         <div class="flex gap-2">
         <button @click="showAddModal = true"
                 class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
             + Tambah Data
         </button>
+
+        <!-- Tombol menuju Recycle Bin -->
+                <a href="recycle_bin.php"
+                class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition">
+                    ♻️ Recycle Bin
+                </a>
+            </div>
     </div>
 
     <!-- ---------- FORM FILTER ---------- -->
