@@ -65,6 +65,14 @@ $harianLabels = array_map(function($tgl) {
 }, array_column($dataHarian, 'tanggal'));
 $harianValues = array_column($dataHarian, 'total');
 
+$totalPasienBulan = array_sum($harianValues);
+$harianPercentages = [];
+foreach ($harianValues as $val) {
+    $harianPercentages[] = $totalPasienBulan > 0 
+        ? round(($val / $totalPasienBulan) * 100, 2)
+        : 0;
+}
+
 // Pasien hari ini
 $today = date('Y-m-d');
 $stmtToday = $pdo->prepare("SELECT * FROM records WHERE DATE(tanggal_masuk) = ?");
@@ -268,11 +276,14 @@ include __DIR__ . '/../includes/header.php';
     <canvas id="chartPasienPulangHarian" height="100"></canvas>
 </div>
 
-<!-- ======== GRAFIK DIAGNOSA ======== -->
-  <div class="mt-6 bg-white p-4 rounded shadow border border-gray-100 hover:shadow-xl transition duration-200">
-    <h2 class="text-xl font-bold mb-2">Grafik 5 Diagnosa dengan Total Tarif Tertinggi</h2>
-    <canvas id="chartDiagnosa" height="120"></canvas>
+<!-- Grafik Pasien Masuk Per Tanggal -->
+<div class="mt-6 bg-white p-4 rounded shadow border border-gray-100 hover:shadow-xl transition duration-200">
+    <h2 class="text-xl font-bold mb-2">
+        Presentase Pasien Masuk Per Tanggal (<?= date('F Y', strtotime($selectedMonthYear.'-01')) ?>)
+    </h2>
+    <canvas id="chartPasienPerTanggal" height="120"></canvas>
 </div>
+
 
 <!-- ======== LIST PASIEN MASUK HARI INI ======== -->
 <div class="mt-6 bg-white p-4 rounded shadow border border-gray-100 hover:shadow-xl transition duration-200">
@@ -360,55 +371,57 @@ include __DIR__ . '/../includes/header.php';
         }
         });
 
-        /* 5 diagnosa dengan tarif tertinggi */
-        <?php if (!empty($diagLabels)): ?>
+const ctxTanggal = document.getElementById('chartPasienPerTanggal').getContext('2d');
 
-        const ctxDiagnosa = document.getElementById('chartDiagnosa').getContext('2d');
-        new Chart(ctxDiagnosa, {
-            type: 'bar',
-            data: {
-                labels: <?= json_encode($diagLabels) ?>,
-                datasets: [
-                    {
-                        label: 'Kelas 1',
-                        data: <?= json_encode($kelas1) ?>,
-                        backgroundColor: '#3b82f6'
-                    },
-                    {
-                        label: 'Kelas 2',
-                        data: <?= json_encode($kelas2) ?>,
-                        backgroundColor: '#10b981'
-                    },
-                    {
-                        label: 'Kelas 3',
-                        data: <?= json_encode($kelas3) ?>,
-                        backgroundColor: '#f59e0b'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => 'Rp ' + Number(ctx.parsed.y).toLocaleString('id-ID')
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: v => 'Rp ' + v.toLocaleString('id-ID')
-                        }
+new Chart(ctxTanggal, {
+    type: 'line', // line chart lebih jelas untuk tren naik-turun
+    data: {
+        labels: <?= json_encode($harianLabels) ?>,
+        datasets: [{
+            label: 'Persentase Pasien Masuk',
+            data: <?= json_encode($harianPercentages) ?>,
+            borderColor: '#3643bdff',
+            backgroundColor: 'rgba(54,67,189,0.3)',
+            fill: true,
+            tension: 0.3, // biar agak halus garisnya
+            pointRadius: 4,
+            pointBackgroundColor: '#3643bdff'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.parsed.y + '%';
                     }
                 }
             }
-        });
-
-        <?php else: ?>
-            console.warn('Data chart diagnosa tidak tersedia');
-        <?php endif; ?>
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                    display: true,
+                    text: 'Persentase (%)'
+                },
+                ticks: {
+                    callback: function(value) {
+                        return value + '%';
+                    }
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Tanggal'
+                }
+            }
+        }
+    }
+});
 
         /* ---------- LINE: Pasien Masuk Harian Bulan Ini ---------- */
 const ctxHarian = document.getElementById('chartPasienHarianBulanIni').getContext('2d');
