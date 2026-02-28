@@ -80,6 +80,18 @@ if (session_status() === PHP_SESSION_NONE) session_start();
         <span>Data Dokumen</span>
       </a>
 
+      <!-- Dokter IGD -->
+       <!-- /pencatatansep/pages/dokter-igd/index.php -->
+      <a href="/pencatatansep/pages/dokter-igd/index.php" 
+        class="flex items-center gap-3 py-2 px-4 rounded-lg transition text-gray-700 group ">
+        <svg class="h-5 w-5 text-red-500 group-hover:text-yellow-700 transition" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+        <span>Data Dokter Jaga</span>
+      </a>
+
           </nav>
         </div>
 

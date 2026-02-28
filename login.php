@@ -340,8 +340,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </script>
 </body>
 <footer class="absolute bottom-0 w-full text-center py-3 text-sm text-white bg-gradient-to-r from-primary-500 to-secondary-500">
-  <marquee behavior="scroll" direction="left" scrollamount="5" class="tracking-wide">
+  <!-- <marquee behavior="scroll" direction="left" scrollamount="5" class="tracking-wide"> -->
     © 2025 – RSU Sebening Kasih | Developed with ❤️ by Agus Cah Ganteng 😎
-  </marquee>
+  <!-- </marquee> -->
 </footer>
 </html>
