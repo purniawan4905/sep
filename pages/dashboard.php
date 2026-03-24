@@ -112,7 +112,7 @@ include __DIR__ . '/../includes/header.php';
 ?>
 
 <!-- Running Text Ramadhan -->
-<div class="w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 text-white py-2 overflow-hidden relative rounded-lg shadow-md mb-2">
+<div class="w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 text-white py-2 overflow-hidden relative rounded-lg shadow-md mb-3">
     <marquee behavior="scroll" direction="left"><div class="whitespace-nowrap animate-marquee text-sm md:text-base font-semibold tracking-wide">
         🌙 Selamat Menunaikan Ibadah Puasa, Marhaban Ya Ramadhan 🌙 — Semoga amal ibadah kita diterima dan diberikan kelancaran dalam setiap aktivitas 🙏
     </div></marquee>
